@@ -1,26 +1,194 @@
 @import "tailwindcss";
 
+/* next-themes uses a `.dark` class on <html> */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ============================================================
+   BlueAlly official palette — hex only, never oklch
+   Navy #001278 · Bright #02A2FD · Green #36BF78
+   Black #040822 · Light Blue #CDE5F1 · White #FFFFFF
+   ============================================================ */
 :root {
+  --ba-navy: #001278;
+  --ba-bright: #02a2fd;
+  --ba-green: #36bf78;
+  --ba-black: #040822;
+  --ba-light-blue: #cde5f1;
+  --ba-white: #ffffff;
+
+  /* ---- semantic tokens · LIGHT ---- */
   --background: #ffffff;
-  --foreground: #171717;
+  --background-alt: #eef5fb;        /* lightened brand light-blue, for alternating sections */
+  --surface: #ffffff;
+  --surface-2: #f4f9fd;
+  --foreground: #040822;            /* body = black */
+  --heading: #001278;               /* headings = navy */
+  --muted: rgba(4, 8, 34, 0.64);    /* black @ alpha (no mid-gray token) */
+  --border: rgba(0, 18, 120, 0.12);
+  --border-strong: rgba(0, 18, 120, 0.24);
+  --accent: #02a2fd;                /* bright blue — accents / fills / icons */
+  --accent-ink: #001278;            /* accent TEXT on light must pass AA → navy */
+  --success: #36bf78;
+  --ring: #02a2fd;
+  --glow: rgba(2, 162, 253, 0.28);
+  --glow-navy: rgba(0, 18, 120, 0.18);
+}
+
+.dark {
+  --background: #040822;            /* black */
+  --background-alt: #070d2b;        /* lifted black, for alternating sections */
+  --surface: #0a1340;               /* navy-black panel */
+  --surface-2: #001278;             /* navy accent panel */
+  --foreground: #cde5f1;            /* body = light blue */
+  --heading: #ffffff;               /* headings = white */
+  --muted: rgba(205, 229, 241, 0.66);
+  --border: rgba(205, 229, 241, 0.14);
+  --border-strong: rgba(2, 162, 253, 0.38);
+  --accent: #02a2fd;
+  --accent-ink: #02a2fd;            /* bright-blue text is approved on dark */
+  --success: #36bf78;
+  --ring: #02a2fd;
+  --glow: rgba(2, 162, 253, 0.45);
+  --glow-navy: rgba(2, 162, 253, 0.22);
 }
 
 @theme inline {
+  /* brand palette utilities → bg-ba-navy, text-ba-bright, etc. */
+  --color-ba-navy: var(--ba-navy);
+  --color-ba-bright: var(--ba-bright);
+  --color-ba-green: var(--ba-green);
+  --color-ba-black: var(--ba-black);
+  --color-ba-light-blue: var(--ba-light-blue);
+  --color-ba-white: var(--ba-white);
+
+  /* semantic utilities → bg-background, text-foreground, etc. */
   --color-background: var(--background);
+  --color-background-alt: var(--background-alt);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-heading: var(--heading);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-success: var(--success);
+  --color-ring: var(--ring);
+
+  --font-sans: var(--font-dm-sans);
+
+  --radius-xl: 0.875rem;
+  --radius-2xl: 1.125rem;
+  --radius-3xl: 1.5rem;
+  --radius-4xl: 2rem;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* ============================================================
+   Base
+   ============================================================ */
+@layer base {
+  html {
+    scroll-padding-top: 6rem;        /* offset for the sticky nav on anchor jumps */
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-dm-sans), -apple-system, BlinkMacSystemFont, "Segoe UI",
+      "Helvetica Neue", sans-serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  h1, h2, h3, h4 {
+    color: var(--heading);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+  ::selection {
+    background: var(--ba-bright);
+    color: #ffffff;
+  }
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+  a { color: inherit; }
+}
+
+/* ============================================================
+   Reusable atmosphere utilities
+   ============================================================ */
+@layer utilities {
+  /* film grain — faint, premium texture over gradients */
+  .grain::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.5;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  }
+  .text-gradient {
+    background: linear-gradient(100deg, var(--ba-bright), var(--ba-navy) 80%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .dark .text-gradient {
+    background: linear-gradient(100deg, #ffffff, var(--ba-bright));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  /* animated brand gradient sweep (used sparingly) */
+  .gradient-sweep {
+    background-size: 200% 200%;
+    animation: ba-sweep 9s ease-in-out infinite;
+  }
+  @keyframes ba-sweep {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* brand range slider */
+.ba-range {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 9999px;
+  background: var(--border);
+  cursor: pointer;
+}
+.ba-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 20px;
+  width: 20px;
+  border-radius: 9999px;
+  background: var(--ba-bright);
+  border: 3px solid var(--background);
+  box-shadow: 0 1px 8px rgba(2, 162, 253, 0.55);
+}
+.ba-range::-moz-range-thumb {
+  height: 20px;
+  width: 20px;
+  border-radius: 9999px;
+  background: var(--ba-bright);
+  border: 3px solid var(--background);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .gradient-sweep { animation: none; }
 }

@@ -1,36 +1,43 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# BlueAlly AI — Flagship Website
 
-## Getting Started
+A bold, brand-perfect marketing site for **BlueAlly Technology Solutions** that educates visitors on BlueAlly's unique, method-first approach to enterprise AI — from the stakes through the seven-step method, the principle, the value-readiness matrix, the two-day workshop, the AI Operating System, and the proof — closing with a clear call to action.
 
-First, run the development server:
+**Tagline:** *Conquer Complexity.*
+
+## Highlights
+
+- **Single flagship page** with sticky anchor nav: Stakes → Why-they-fail → Method → Principle → Value-Readiness Matrix → EPOCH → Workshop → Calculator → Offerings → Proof → Why BlueAlly → CTA.
+- **Light & dark mode**, fully responsive (mobile-first).
+- **Four interactive elements:** an animated *Sample AI Value Assessment* card, an interactive Value-Readiness Matrix, a deterministic trapped-value ROI calculator, and a **Claude-powered AI assistant** grounded in BlueAlly's methodology.
+- **Brand-locked** to the official BlueAlly palette (Navy `#001278`, Bright Blue `#02A2FD`, Green `#36BF78`), **DM Sans** typography, and the official logos.
+- Voice: terse, declarative, warm — the Hemingway register of the source briefings.
+
+## Stack
+
+- **Next.js 16** (App Router) · **React 19** · **TypeScript**
+- **Tailwind CSS v4** (hex tokens, never oklch) · **Framer Motion** · **next-themes**
+- **Vercel AI SDK** (`ai` + `@ai-sdk/anthropic`) → Claude `claude-haiku-4-5` for the assistant
+
+## Develop
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev      # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The AI assistant needs an Anthropic key at runtime. Set one in `.env.local`:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+ANTHROPIC_API_KEY=sk-ant-...
+# (AI_PROVIDER_KEY / CLAUDE_KEY are also accepted as fallbacks)
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Everything else runs without secrets. `npm run build` produces the optimized production build.
 
-## Learn More
+## Content
 
-To learn more about Next.js, take a look at the following resources:
+All site copy lives in [`lib/content.ts`](lib/content.ts) — sourced from BlueAlly's Executive Briefing and "Reading Your AI Value Assessment" decks. The assistant's grounding lives in [`lib/chat-system-prompt.ts`](lib/chat-system-prompt.ts).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+© BlueAlly Technology Solutions LLC. Built to the official BlueAlly brand guidelines.
