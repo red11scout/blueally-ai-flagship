@@ -61,6 +61,12 @@ export default function RootLayout({
       style={{ scrollBehavior: "smooth" }}
     >
       <body className="min-h-full bg-background font-sans text-foreground antialiased">
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "try{document.documentElement.classList.add('js-reveal');setTimeout(function(){var e=document.querySelectorAll('[data-reveal]:not([data-shown])');for(var i=0;i<e.length;i++)e[i].setAttribute('data-shown','true')},2500)}catch(e){}",
+          }}
+        />
         <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>

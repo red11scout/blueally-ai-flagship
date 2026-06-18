@@ -183,6 +183,29 @@
   border: 3px solid var(--background);
 }
 
+/* Scroll reveal — visible by default (no-JS / crawler safe). Only when JS is
+   confirmed active (html.js-reveal, set pre-paint) do elements start hidden and
+   reveal once scrolled into view. No flash, no risk of stuck-hidden content. */
+[data-reveal] {
+  transition:
+    opacity 0.6s ease var(--reveal-delay, 0s),
+    transform 0.6s cubic-bezier(0.22, 0.61, 0.27, 1) var(--reveal-delay, 0s),
+    filter 0.6s ease var(--reveal-delay, 0s);
+}
+html.js-reveal [data-reveal]:not([data-shown="true"]) {
+  opacity: 0;
+  transform: translateY(var(--reveal-y, 22px));
+  filter: blur(8px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.js-reveal [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.001ms !important;

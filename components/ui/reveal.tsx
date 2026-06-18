@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 
 type RevealProps = {
   children: ReactNode;
@@ -11,10 +11,10 @@ type RevealProps = {
 };
 
 /**
- * Scroll-triggered fade + blur-up using a self-contained IntersectionObserver.
- * Reliable across the stack: a 1.2s mount fallback and graceful degradation
- * guarantee content can never stay hidden. `filter` resets to `none` once shown
- * (no residual compositing layer).
+ * Scroll-triggered fade + blur-up. Robust by design: the element is visible by
+ * default (CSS only hides it when `html.js-reveal` is set pre-paint). This
+ * component just flips `data-shown` when the element scrolls into view, with a
+ * mount fallback so content can never stay hidden.
  */
 export function Reveal({ children, className, delay = 0, y = 22 }: RevealProps) {
   const ref = useRef<HTMLDivElement>(null);
@@ -22,19 +22,9 @@ export function Reveal({ children, className, delay = 0, y = 22 }: RevealProps) 
 
   useEffect(() => {
     const el = ref.current;
-    const fallback = setTimeout(() => setShown(true), 1200);
-
     if (!el || typeof IntersectionObserver === "undefined") {
       setShown(true);
-      return () => clearTimeout(fallback);
-    }
-
-    const prefersReduced = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
-    if (prefersReduced) {
-      setShown(true);
-      return () => clearTimeout(fallback);
+      return;
     }
 
     const io = new IntersectionObserver(
@@ -42,12 +32,17 @@ export function Reveal({ children, className, delay = 0, y = 22 }: RevealProps) 
         if (entries[0].isIntersecting) {
           setShown(true);
           io.disconnect();
-          clearTimeout(fallback);
         }
       },
       { rootMargin: "0px 0px -80px 0px" },
     );
     io.observe(el);
+
+    // safety net: reveal even if the observer never fires
+    const fallback = setTimeout(() => {
+      setShown(true);
+      io.disconnect();
+    }, 1500);
 
     return () => {
       io.disconnect();
@@ -58,14 +53,15 @@ export function Reveal({ children, className, delay = 0, y = 22 }: RevealProps) 
   return (
     <div
       ref={ref}
+      data-reveal
+      data-shown={shown ? "true" : undefined}
       className={className}
-      style={{
-        opacity: shown ? 1 : 0,
-        transform: shown ? "none" : `translateY(${y}px)`,
-        filter: shown ? "none" : "blur(8px)",
-        transition: `opacity 0.6s ease ${delay}s, transform 0.6s cubic-bezier(0.22,0.61,0.27,1) ${delay}s, filter 0.6s ease ${delay}s`,
-        willChange: shown ? "auto" : "opacity, transform",
-      }}
+      style={
+        {
+          "--reveal-y": `${y}px`,
+          "--reveal-delay": `${delay}s`,
+        } as CSSProperties
+      }
     >
       {children}
     </div>
